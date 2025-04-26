@@ -1,18 +1,22 @@
-﻿    using System.Net.Http;
-    using System.Text;
-    using System.Text.Json;
-    using System.Text.Json.Serialization;
+﻿using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using KiChatNet.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
-    namespace KiChatNet.Services
+namespace KiChatNet.Services
 {
     public class ChatService
     {
         private readonly HttpClient _client;
         private readonly string _modelName;
+        private readonly ILogger _logger;
 
-        public ChatService(string baseUrl, string modelName)
+        public ChatService(string baseUrl, string modelName, ILogger logger)
         {
+            _logger = logger;
             _client = new HttpClient { BaseAddress = new Uri(baseUrl) };
             _modelName = modelName;
         }
@@ -27,6 +31,11 @@ using KiChatNet.Models;
             };
 
             var json = JsonSerializer.Serialize(requestBody);
+
+
+            _logger.LogDebug($"Request-Payload: {json}");
+
+
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var request = new HttpRequestMessage(HttpMethod.Post, "/v1/chat/completions")

@@ -1,5 +1,6 @@
 ﻿using KiChatNet.Models;
 using KiChatNet.Services;
+using Microsoft.Extensions.Logging;
 using System.Text;
 
 namespace KiChatNet
@@ -8,17 +9,57 @@ namespace KiChatNet
     {
         static async Task Main(string[] args)
         {
+            CommandLineArgs commandArgs = new CommandLineArgs(args);
+
+            string? systemPrompt = null;
+            string firstMessage = null;
+
+            if (commandArgs.SystemPromptPath != null)
+                systemPrompt = File.ReadAllText(commandArgs.SystemPromptPath, Encoding.GetEncoding("ISO-8859-1"));
+
+            if (commandArgs.FirstMessagePath != null)
+                firstMessage = File.ReadAllText(commandArgs.FirstMessagePath, Encoding.GetEncoding("ISO-8859-1"));
+           
             var config = new ConfigService();
 
-            var chatHistory = new ChatHistory();
-            chatHistory.AddMessage(new Message("system", config.SystemPrompt));
+            using var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder
+                    .AddConfiguration(config.Configuration.GetSection("Logging"))
+                    .AddConsole();
+            });
 
-            var chatService = new ChatService(config.EndpointUrl, config.ModelName);
+            var logger = loggerFactory.CreateLogger<Program>();
+
+
+            if (systemPrompt == null)
+            {
+                systemPrompt = config.SystemPrompt;
+            }
+
+            var chatHistory = new ChatHistory();
+
+            chatHistory.AddMessage(new Message("system", systemPrompt));
+
+            var chatService = new ChatService(config.EndpointUrl, config.ModelName, logger);
 
             while (true)
             {
                 Console.Write("\nDu: ");
-                var userInput = Console.ReadLine();
+
+                string userInput;
+
+                if (!chatHistory.HasUserMessage && !string.IsNullOrEmpty(firstMessage))
+                {
+                    userInput = firstMessage;
+                    Console.WriteLine(firstMessage);
+                }
+                else
+                {
+                    userInput = Console.ReadLine();
+                }
+
+
                 if (string.IsNullOrWhiteSpace(userInput)) break;
 
                 chatHistory.AddMessage(new Message("user", userInput));

@@ -14,12 +14,15 @@ namespace KiChatNet.Services
         public string SystemPrompt { get; }
         public int MaxContextMessages { get; }
 
+        public IConfiguration Configuration { get; }
+
         public ConfigService()
         {
+
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false)
                 .Build();
-
+            Configuration = config;
             var section = config.GetSection("LmStudio");
 
             EndpointUrl = section.GetValue<string>("EndpointUrl") ?? "http://localhost:1234";

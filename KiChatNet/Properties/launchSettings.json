@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "KiChatNet": {
+      "commandName": "Project"
+    },
+    "Prompts": {
+      "commandName": "Project",
+      "commandLineArgs": "s=prompts\\system.prompt u=prompts\\user.prompt"
+    }
+  }
+}
