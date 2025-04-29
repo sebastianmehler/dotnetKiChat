@@ -22,6 +22,11 @@ namespace KiChatNet
            
             var config = new ConfigService();
 
+            if (firstMessage == null && config.FirstUserMessage != null)
+            {
+                firstMessage = config.FirstUserMessage;
+            }
+
             using var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder
@@ -39,7 +44,7 @@ namespace KiChatNet
 
             var chatHistory = new ChatHistory();
 
-            chatHistory.AddMessage(new Message("system", systemPrompt));
+            chatHistory.AddMessage(new Message(Roles.System, systemPrompt));
 
             var chatService = new ChatService(config.EndpointUrl, config.ModelName, logger);
 
@@ -62,7 +67,7 @@ namespace KiChatNet
 
                 if (string.IsNullOrWhiteSpace(userInput)) break;
 
-                chatHistory.AddMessage(new Message("user", userInput));
+                chatHistory.AddMessage(new Message(Roles.User, userInput));
 
                 var context = chatHistory.Messages;
 
@@ -75,7 +80,7 @@ namespace KiChatNet
                     responseText.Append(token);
                 });
 
-                chatHistory.AddMessage(new Message("assistant", responseText.ToString()));
+                chatHistory.AddMessage(new Message(Roles.Assistant, responseText.ToString()));
             }
         }
     }

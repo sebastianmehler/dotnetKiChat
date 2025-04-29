@@ -29,7 +29,7 @@ namespace KiChatNet.Models
                         break;
 
                     default:
-                        throw new ArgumentException($"Argument {parts.First()} ist kein gültiger Parameter");
+                        throw new ArgumentException($"Das Argument {parts.First()} ist kein gültiger Parameter");
                         break;
                 }
             }

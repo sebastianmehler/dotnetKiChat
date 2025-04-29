@@ -12,6 +12,7 @@ namespace KiChatNet.Services
         public string EndpointUrl { get; }
         public string ModelName { get; }
         public string SystemPrompt { get; }
+        public string? FirstUserMessage { get; }
         public int MaxContextMessages { get; }
 
         public IConfiguration Configuration { get; }
@@ -26,9 +27,10 @@ namespace KiChatNet.Services
             var section = config.GetSection("LmStudio");
 
             EndpointUrl = section.GetValue<string>("EndpointUrl") ?? "http://localhost:1234";
-            ModelName = section.GetValue<string>("ModelName") ?? "llama3";
-            SystemPrompt = section.GetValue<string>("SystemPrompt") ?? "Du bist ein hilfreicher Assistent.";
+            ModelName = section.GetValue<string>("ModelName");
+            SystemPrompt = section.GetValue<string>("SystemPrompt");
             MaxContextMessages = section.GetValue<int>("MaxContextMessages");
+            FirstUserMessage = section.GetValue<string>("FirstUserMessage");
         }
     }
 }

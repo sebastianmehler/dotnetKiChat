@@ -12,7 +12,7 @@ namespace KiChatNet.Models
 
         public bool HasUserMessage => _messages.Any(m => m.Role=="user");
 
-        private readonly List<Message> _messages = new();
+        private readonly List<Message> _messages = [];
        
 
         public void AddMessage(Message message)

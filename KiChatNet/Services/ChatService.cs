@@ -48,7 +48,7 @@ namespace KiChatNet.Services
             if (!response.IsSuccessStatusCode)
             {
                 string stringcontent = await response.Content.ReadAsStringAsync();
-                throw new Exception($"{response.RequestMessage.RequestUri} -> {stringcontent}");
+                throw new Exception($"{response.RequestMessage.RequestUri} \n{stringcontent}");
             }
 
             response.EnsureSuccessStatusCode();

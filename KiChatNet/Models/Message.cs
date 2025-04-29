@@ -10,14 +10,14 @@ namespace KiChatNet.Models
     public class Message
     {
         [JsonPropertyName("role")]
-        public string Role { get; set; }
+        public string Role { get; }
 
         [JsonPropertyName("content")]
         public string Content { get; set; }
 
-        public Message(string role, string content)
+        public Message(Roles role, string content)
         {
-            Role = role;
+            Role = role.ToString().ToLower();
             Content = content;
         }
     }
