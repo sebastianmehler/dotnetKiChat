@@ -54,6 +54,15 @@ namespace KiChatNet
             }
 
             var chatHistory = new ChatHistory();
+            var chatHistoryFileService = HistoryFileService.CreateNew();
+
+            logger.LogInformation($"Chat History: {chatHistoryFileService.Filename}");
+
+            chatHistory.MessageAdded += async (message) =>
+            {
+                await chatHistoryFileService.SaveAsnyc(chatHistory);
+            };
+
 
             chatHistory.AddMessage(new Message(Roles.System, systemPrompt));
 
