@@ -19,10 +19,11 @@ namespace KiChatNet.Services
 
         public static HistoryFileService CreateNew()
         {
-            var filename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "KiChatNet", $"history{DateTime.Now:ddMMyyyy_hhmmss}.json");
+            var filename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "KiChatNet", $"history{DateTime.Now:ddMMyyyy_HHmmss}.json");
             Directory.CreateDirectory(Path.GetDirectoryName(filename));
             return new HistoryFileService(filename);
         }
+
 
         public async Task SaveAsnyc(ChatHistory history)
         {
@@ -38,6 +39,19 @@ namespace KiChatNet.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Error saving chat history: {ex.Message}");
+            }
+        }
+
+        public async Task<ChatHistory> LoadAsync()
+        {
+            try
+            {
+                var json = await File.ReadAllTextAsync(Filename);
+                return JsonSerializer.Deserialize<ChatHistory>(json) ?? throw new Exception($"History empty");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"History could not be loaded from File {Filename}", ex);
             }
         }
     }

@@ -10,6 +10,10 @@
     "sample.json": {
       "commandName": "Project",
       "commandLineArgs": "c=sample.json"
+    },
+    "loadHistory": {
+      "commandName": "Project",
+      "commandLineArgs": "c=sample.json loadHistory=C:\\Users\\Sebastian\\AppData\\Roaming\\KiChatNet\\history29042025_043337.json"
     }
   }
 }

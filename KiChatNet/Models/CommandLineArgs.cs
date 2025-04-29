@@ -12,6 +12,7 @@ namespace KiChatNet.Models
         public string? FirstMessagePath { get; set; }
         public string? ModelName { get; set; }
         public string? ConfigFileName { get; set; }
+        public string? HistoryFileName { get; set; }
 
         static Dictionary<string, string> ParseArguments(string[] args)
         {
@@ -56,6 +57,11 @@ namespace KiChatNet.Models
             if(arguments.ContainsKey("c"))
             {
                 ConfigFileName = arguments["c"];
+            }
+
+            if (arguments.ContainsKey("loadHistory"))
+            {
+                HistoryFileName = arguments["loadHistory"];
             }
         }
     }

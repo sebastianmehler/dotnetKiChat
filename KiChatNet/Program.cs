@@ -14,6 +14,7 @@ namespace KiChatNet
             string? systemPrompt = null;
             string firstMessage = null;
             string modelName = null;
+            string? historyFileName = null;
 
             if (commandArgs.SystemPromptPath != null)
                 systemPrompt = File.ReadAllText(commandArgs.SystemPromptPath, Encoding.GetEncoding("ISO-8859-1"));
@@ -24,6 +25,11 @@ namespace KiChatNet
             if (commandArgs.ModelName != null)
             {
                 modelName = commandArgs.ModelName;
+            }
+
+            if (commandArgs.HistoryFileName != null)
+            {
+                historyFileName = commandArgs.HistoryFileName;
             }
 
                 var config = commandArgs.ConfigFileName == null ? new ConfigService() : new ConfigService(commandArgs.ConfigFileName);
@@ -53,10 +59,25 @@ namespace KiChatNet
                 modelName = config.ModelName;
             }
 
-            var chatHistory = new ChatHistory();
-            var chatHistoryFileService = HistoryFileService.CreateNew();
 
-            logger.LogInformation($"Chat History: {chatHistoryFileService.Filename}");
+            HistoryFileService chatHistoryFileService;
+            ChatHistory chatHistory;
+            if (historyFileName == null)
+            {
+                chatHistoryFileService = HistoryFileService.CreateNew();
+                chatHistory = new();
+                chatHistory.ModelName = modelName;                    
+            }
+            else
+            {
+                chatHistoryFileService = new(historyFileName);
+                chatHistory = await chatHistoryFileService.LoadAsync();
+                PrintHistory(chatHistory);
+            }
+
+
+
+                logger.LogInformation($"Chat History: {chatHistoryFileService.Filename}");
 
             chatHistory.MessageAdded += async (message) =>
             {
@@ -101,6 +122,14 @@ namespace KiChatNet
                 });
 
                 chatHistory.AddMessage(new Message(Roles.Assistant, responseText.ToString()));
+            }
+        }
+
+        private static void PrintHistory(ChatHistory chatHistory)
+        {
+            foreach (var item in chatHistory.Messages.Where(m => (new[] { Roles.User, Roles.Assistant }).Select(r => r.ToString().ToLower()).Contains(m.Role)))
+            {
+                Console.WriteLine($"{item.Role}: {item.Content}");
             }
         }
     }
