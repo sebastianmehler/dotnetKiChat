@@ -1,0 +1,15 @@
+{
+    "LmStudio": {
+        "EndpointUrl": "http://localhost:1234",
+        "ModelName": "mythomax-l2-13b@q6_k",
+        "SystemPrompt": "Du bist ein hilfreicher Assistent.",
+        "FirstUserMessage": "Weise mich darauf hin, dass ich die sample.json Datei ausgewählt habe.",
+        "MaxContextMessages": 5
+    },
+    "Logging": {
+        "LogLevel": {
+            "Default": "Information",
+            "KiChatNet": "Information"
+        }
+    }
+}

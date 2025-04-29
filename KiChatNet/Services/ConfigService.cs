@@ -17,11 +17,10 @@ namespace KiChatNet.Services
 
         public IConfiguration Configuration { get; }
 
-        public ConfigService()
+        public ConfigService(string settingsfile = "appsettings.json")
         {
-
             var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile(settingsfile, optional: false)
                 .Build();
             Configuration = config;
             var section = config.GetSection("LmStudio");

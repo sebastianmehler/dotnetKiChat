@@ -13,14 +13,20 @@ namespace KiChatNet
 
             string? systemPrompt = null;
             string firstMessage = null;
+            string modelName = null;
 
             if (commandArgs.SystemPromptPath != null)
                 systemPrompt = File.ReadAllText(commandArgs.SystemPromptPath, Encoding.GetEncoding("ISO-8859-1"));
 
             if (commandArgs.FirstMessagePath != null)
                 firstMessage = File.ReadAllText(commandArgs.FirstMessagePath, Encoding.GetEncoding("ISO-8859-1"));
-           
-            var config = new ConfigService();
+
+            if (commandArgs.ModelName != null)
+            {
+                modelName = commandArgs.ModelName;
+            }
+
+                var config = commandArgs.ConfigFileName == null ? new ConfigService() : new ConfigService(commandArgs.ConfigFileName);
 
             if (firstMessage == null && config.FirstUserMessage != null)
             {
@@ -40,6 +46,11 @@ namespace KiChatNet
             if (systemPrompt == null)
             {
                 systemPrompt = config.SystemPrompt;
+            }
+
+            if (modelName == null)
+            {
+                modelName = config.ModelName;
             }
 
             var chatHistory = new ChatHistory();

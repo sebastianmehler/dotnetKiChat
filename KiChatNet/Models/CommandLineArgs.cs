@@ -10,28 +10,52 @@ namespace KiChatNet.Models
     {
         public string? SystemPromptPath { get; set; }
         public string? FirstMessagePath { get; set; }
+        public string? ModelName { get; set; }
+        public string? ConfigFileName { get; set; }
+
+        static Dictionary<string, string> ParseArguments(string[] args)
+        {
+            var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var arg in args)
+            {
+                var parts = arg.Split('=', 2);
+
+                if (parts.Length == 2)
+                {
+                    dict[parts[0]] = parts[1];
+                }
+                else
+                {
+                    Console.WriteLine($"Warnung: Ungültiges Argument ignoriert: '{arg}'");
+                }
+            }
+
+            return dict;
+        }
 
         public CommandLineArgs(string[] args)
         {
-            foreach (var arg in args)
+            var arguments = ParseArguments(args);
+
+            if (arguments.ContainsKey("s"))
             {
-                string[] parts = arg.Split('=');
-                switch (parts.First())
-                {
-                    case "systemprompt":
-                    case "s":
-                        SystemPromptPath = parts[1];
-                        break;
+                SystemPromptPath = arguments["s"];
+            }
 
-                    case "firstusermessage":
-                    case "u":
-                        FirstMessagePath = parts[1];
-                        break;
+            if (arguments.ContainsKey("u"))
+            {
+                FirstMessagePath = arguments["u"];
+            }
 
-                    default:
-                        throw new ArgumentException($"Das Argument {parts.First()} ist kein gültiger Parameter");
-                        break;
-                }
+            if(arguments.ContainsKey("m"))
+            {
+                ModelName = arguments["m"];
+            }
+
+            if(arguments.ContainsKey("c"))
+            {
+                ConfigFileName = arguments["c"];
             }
         }
     }

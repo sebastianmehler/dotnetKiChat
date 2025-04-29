@@ -5,7 +5,11 @@
     },
     "Prompts": {
       "commandName": "Project",
-      "commandLineArgs": "s=prompts\\system.prompt u=prompts\\user.prompt"
+      "commandLineArgs": "s=prompts\\system.prompt u=prompts\\user.prompt m=mythomax-l2-13b@q6_k"
+    },
+    "sample.json": {
+      "commandName": "Project",
+      "commandLineArgs": "c=sample.json"
     }
   }
 }
