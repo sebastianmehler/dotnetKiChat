@@ -6,6 +6,12 @@
         "FirstUserMessage": "Weise mich darauf hin, dass ich die sample.json Datei ausgewählt habe.",
         "MaxContextMessages": 5
     },
+    "Console": {
+        "UserName": "Sebastian",
+        "AssistantName": "KI",
+        "UserColor": "Yellow",
+        "AssistantColor": "Cyan"
+    },
     "Logging": {
         "LogLevel": {
             "Default": "Information",

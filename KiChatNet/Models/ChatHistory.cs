@@ -28,7 +28,7 @@ namespace KiChatNet.Models
         [JsonPropertyName("model"), JsonPropertyOrder(1)]
         public string ModelName { get; set; }
 
-        public bool HasUserMessage => _messages.Any(m => m.Role=="user");
+        public bool HasUserMessage => _messages.Any(m => m.RoleName=="user");
 
         public event Action<Message> MessageAdded;
 

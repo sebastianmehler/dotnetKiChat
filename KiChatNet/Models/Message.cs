@@ -10,7 +10,7 @@ namespace KiChatNet.Models
     public class Message
     {
         [JsonPropertyName("role")]
-        public string Role { get; set; }
+        public string RoleName { get; set; }
 
         [JsonPropertyName("content")]
         public string Content { get; set; }
@@ -22,7 +22,7 @@ namespace KiChatNet.Models
 
         public Message(Roles role, string content)
         {
-            Role = role.ToString().ToLower();
+            RoleName = role.ToString().ToLower();
             Content = content;
         }
     }

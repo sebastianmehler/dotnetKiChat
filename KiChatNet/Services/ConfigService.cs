@@ -14,6 +14,10 @@ namespace KiChatNet.Services
         public string SystemPrompt { get; }
         public string? FirstUserMessage { get; }
         public int MaxContextMessages { get; }
+        public string UserName { get; set; }
+        public string AssistentName { get; set; }
+        public ConsoleColor UserColor { get; set; }
+        public ConsoleColor AssistentColor { get; set; }
 
         public IConfiguration Configuration { get; }
 
@@ -23,13 +27,20 @@ namespace KiChatNet.Services
                 .AddJsonFile(settingsfile, optional: false)
                 .Build();
             Configuration = config;
-            var section = config.GetSection("LmStudio");
+            var lmStudioSection = config.GetSection("LmStudio");
 
-            EndpointUrl = section.GetValue<string>("EndpointUrl") ?? "http://localhost:1234";
-            ModelName = section.GetValue<string>("ModelName");
-            SystemPrompt = section.GetValue<string>("SystemPrompt");
-            MaxContextMessages = section.GetValue<int>("MaxContextMessages");
-            FirstUserMessage = section.GetValue<string>("FirstUserMessage");
+            var consoleSection = config.GetSection("Console");
+
+            EndpointUrl = lmStudioSection.GetValue<string>("EndpointUrl") ?? "http://localhost:1234";
+            ModelName = lmStudioSection.GetValue<string>("ModelName");
+            SystemPrompt = lmStudioSection.GetValue<string>("SystemPrompt");
+            MaxContextMessages = lmStudioSection.GetValue<int>("MaxContextMessages");
+            FirstUserMessage = lmStudioSection.GetValue<string>("FirstUserMessage");
+            UserName = consoleSection.GetValue<string>("UserName");
+            AssistentName = consoleSection.GetValue<string>("AssistantName");
+            UserColor = consoleSection.GetValue<ConsoleColor>("UserColor");
+            AssistentColor = consoleSection.GetValue<ConsoleColor>("AssistantColor");
+
         }
     }
 }

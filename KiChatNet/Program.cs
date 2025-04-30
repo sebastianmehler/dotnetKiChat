@@ -72,7 +72,7 @@ namespace KiChatNet
             {
                 chatHistoryFileService = new(historyFileName);
                 chatHistory = await chatHistoryFileService.LoadAsync();
-                PrintHistory(chatHistory);
+                PrintHistory(chatHistory,config);
             }
 
 
@@ -91,9 +91,11 @@ namespace KiChatNet
 
             while (true)
             {
-                Console.Write("\nDu: ");
+                Console.Write($"\n{config.UserName}: \n");
 
                 string userInput;
+
+                Console.ForegroundColor = config.UserColor;
 
                 if (!chatHistory.HasUserMessage && !string.IsNullOrEmpty(firstMessage))
                 {
@@ -105,6 +107,7 @@ namespace KiChatNet
                     userInput = Console.ReadLine();
                 }
 
+                Console.ResetColor();
 
                 if (string.IsNullOrWhiteSpace(userInput)) break;
 
@@ -112,12 +115,14 @@ namespace KiChatNet
 
                 var context = chatHistory.Messages;
 
-                Console.Write("Assistent: ");
+                Console.Write($"{config.AssistentName}: \n");
                 var responseText = new StringBuilder();
 
                 await chatService.StreamChatAsync(context, token =>
                 {
+                    Console.ForegroundColor = config.AssistentColor;
                     Console.Write(token);
+                    Console.ResetColor();
                     responseText.Append(token);
                 });
 
@@ -125,12 +130,37 @@ namespace KiChatNet
             }
         }
 
-        private static void PrintHistory(ChatHistory chatHistory)
+        private static void PrintHistory(ChatHistory chatHistory, ConfigService config)
         {
-            foreach (var item in chatHistory.Messages.Where(m => (new[] { Roles.User, Roles.Assistant }).Select(r => r.ToString().ToLower()).Contains(m.Role)))
+            foreach (var item in chatHistory.Messages.Where(m => (new[] { Roles.User, Roles.Assistant }).Select(r => r.ToString().ToLower()).Contains(m.RoleName)))
             {
-                Console.WriteLine($"{item.Role}: {item.Content}");
+                Console.Write($"{GetNameForRole(item.RoleName, config)}:");
+                Console.ForegroundColor = GetColorForRole(item.RoleName, config);
+                Console.WriteLine(item.Content);
+                Console.ResetColor();
             }
         }
+
+        private static string GetNameForRole(string role, ConfigService service)
+        {
+            return role switch
+            {
+                "user" => service.UserName,
+                "assistant" => service.AssistentName,
+                _ => role
+            };
+        }
+
+        private static ConsoleColor GetColorForRole(string role, ConfigService service)
+        {
+            return role switch
+            {
+                "user" => service.UserColor,
+                "assistant" => service.AssistentColor,
+                _ => Console.ForegroundColor
+            };
+        }
+
+       
     }
 }
