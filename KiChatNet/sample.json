@@ -2,8 +2,8 @@
     "LmStudio": {
         "EndpointUrl": "http://localhost:1234",
         "ModelName": "mythomax-l2-13b@q6_k",
-        "SystemPrompt": "Du bist ein hilfreicher Assistent.",
-        "FirstUserMessage": "Weise mich darauf hin, dass ich die sample.json Datei ausgewählt habe.",
+        "SystemPrompt": "C:\\Code\\Prompts\\system.prompt",
+        "FirstUserMessage": "C:\\Code\\Prompts\\user.prompt",
         "MaxContextMessages": 5
     },
     "Console": {

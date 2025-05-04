@@ -64,5 +64,7 @@ namespace KiChatNet.Models
                 HistoryFileName = arguments["loadHistory"];
             }
         }
+
+
     }
 }

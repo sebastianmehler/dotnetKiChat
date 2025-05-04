@@ -12,15 +12,15 @@ namespace KiChatNet
             CommandLineArgs commandArgs = new CommandLineArgs(args);
 
             string? systemPrompt = null;
-            string firstMessage = null;
+            string? firstMessage = null;
             string modelName = null;
             string? historyFileName = null;
 
             if (commandArgs.SystemPromptPath != null)
-                systemPrompt = File.ReadAllText(commandArgs.SystemPromptPath, Encoding.GetEncoding("ISO-8859-1"));
+                systemPrompt = File.ReadAllText(commandArgs.SystemPromptPath);
 
             if (commandArgs.FirstMessagePath != null)
-                firstMessage = File.ReadAllText(commandArgs.FirstMessagePath, Encoding.GetEncoding("ISO-8859-1"));
+                firstMessage = File.ReadAllText(commandArgs.FirstMessagePath /*, Encoding.GetEncoding("ISO-8859-1")*/);
 
             if (commandArgs.ModelName != null)
             {
@@ -32,12 +32,10 @@ namespace KiChatNet
                 historyFileName = commandArgs.HistoryFileName;
             }
 
-                var config = commandArgs.ConfigFileName == null ? new ConfigService() : new ConfigService(commandArgs.ConfigFileName);
+            var config = commandArgs.ConfigFileName == null ? new ConfigService() : new ConfigService(commandArgs.ConfigFileName);
 
-            if (firstMessage == null && config.FirstUserMessage != null)
-            {
-                firstMessage = config.FirstUserMessage;
-            }
+
+
 
             using var loggerFactory = LoggerFactory.Create(builder =>
             {
@@ -49,15 +47,26 @@ namespace KiChatNet
             var logger = loggerFactory.CreateLogger<Program>();
 
 
+
+            ResolvePathService resolvePathService = new ResolvePathService(logger);
+
+         
+
             if (systemPrompt == null)
             {
-                systemPrompt = config.SystemPrompt;
+                systemPrompt = resolvePathService.ResolvePath(config.SystemPrompt);
             }
 
             if (modelName == null)
             {
                 modelName = config.ModelName;
             }
+
+            if (firstMessage == null && config.FirstUserMessage != null)
+            {
+                firstMessage = resolvePathService.ResolvePath( config.FirstUserMessage);
+            }
+
 
 
             HistoryFileService chatHistoryFileService;
@@ -66,18 +75,18 @@ namespace KiChatNet
             {
                 chatHistoryFileService = HistoryFileService.CreateNew();
                 chatHistory = new();
-                chatHistory.ModelName = modelName;                    
+                chatHistory.ModelName = modelName;
             }
             else
             {
                 chatHistoryFileService = new(historyFileName);
                 chatHistory = await chatHistoryFileService.LoadAsync();
-                PrintHistory(chatHistory,config);
+                PrintHistory(chatHistory, config);
             }
 
 
 
-                logger.LogInformation($"Chat History: {chatHistoryFileService.Filename}");
+            logger.LogInformation($"Chat History: {chatHistoryFileService.Filename}");
 
             chatHistory.MessageAdded += async (message) =>
             {
@@ -161,6 +170,6 @@ namespace KiChatNet
             };
         }
 
-       
+
     }
 }
