@@ -113,7 +113,13 @@ namespace KiChatNet
                 }
                 else
                 {
-                    userInput = Console.ReadLine();
+                    userInput=string.Empty;
+                    string input;
+                    do
+                    {
+                        input = Console.ReadLine();
+                        userInput += input + Environment.NewLine;
+                    } while (!string.IsNullOrWhiteSpace(input));
                 }
 
                 Console.ResetColor();
